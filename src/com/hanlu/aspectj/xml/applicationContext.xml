@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+    <bean id="userDao" class="com.hanlu.jdk.UserDaoImpl" />
+    <bean id="myLog" class="com.hanlu.aspectj.xml.MyLog" />
+    <bean id="myTransaction" class="com.hanlu.aspectj.xml.MyTransaction" />
+    <aop:config>
+        <aop:aspect ref="myLog">
+            <aop:pointcut expression="execution(* com.hanlu.jdk.*.*(..))" id="myPointCut" />
+            <aop:before method="myLogBefore" pointcut-ref="myPointCut" />
+            <aop:before method="myLogAfterReturning" pointcut-ref="myPointCut" />
+            <aop:after-throwing method="myLogAfterThrowing" pointcut-ref="myPointCut"
+                                throwing="e" />
+        </aop:aspect>
+        <aop:aspect ref="myTransaction">
+            <aop:pointcut expression="execution(* com.hanlu.jdk.*.delete*(..))" id="myPointCut1" />
+            <aop:around method="myTranAround" pointcut-ref="myPointCut1" />
+            <aop:after-throwing method="myTranAfterThrowing" pointcut-ref="myPointCut1"
+                                throwing="e" />
+        </aop:aspect>
+    </aop:config>
+</beans>
